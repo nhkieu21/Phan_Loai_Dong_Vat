@@ -8,15 +8,15 @@ from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-# Bước 1: Đường dẫn dữ liệu
-data_dir = r'D:\PhanLoaiDongVat\data'
+# Đường dẫn dữ liệu
+data_dir = r'D:\Phan_Loai_Dong_Vat\data'
 
-# Bước 2: Xác định các thuộc tính hình ảnh
+# Xác định các thuộc tính hình ảnh
 Image_Width, Image_Height = 224, 224
 Image_Size = (Image_Width, Image_Height)
 Image_Channels = 3
 
-# Bước 3: Tải MobileNetV2 và thêm các lớp tùy chỉnh
+# Tải MobileNetV2 và thêm các lớp tùy chỉnh
 base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(Image_Width, Image_Height, Image_Channels))
 
 # Freeze các tầng cơ sở
@@ -34,12 +34,12 @@ model = Sequential([
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-# Bước 4: Định nghĩa callbacks
+# Định nghĩa callbacks
 earlystop = EarlyStopping(monitor='val_accuracy', patience=3, restore_best_weights=True)
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience=2, verbose=1, factor=0.5, min_lr=0.00001)
 callbacks = [earlystop, learning_rate_reduction]
 
-# Bước 5: Chuẩn bị dữ liệu huấn luyện và xác thực
+# Chuẩn bị dữ liệu huấn luyện và xác thực
 batch_size = 15
 
 train_datagen = ImageDataGenerator(
@@ -63,7 +63,7 @@ validation_generator = train_datagen.flow_from_directory(
     subset='validation'
 )
 
-# Bước 6: Huấn luyện mô hình
+# Huấn luyện mô hình
 history = model.fit(
     train_generator,
     epochs=30,
@@ -73,10 +73,10 @@ history = model.fit(
     callbacks=callbacks
 )
 
-# Bước 7: Lưu mô hình
+# Lưu mô hình
 model.save("mobilenetv2_animals.h5")
 
-# Bước 8: Kiểm tra trên ảnh tùy chọn
+# Kiểm tra trên ảnh tùy chọn
 class_indices = train_generator.class_indices
 label_map = {v: k for k, v in class_indices.items()}  # Tạo từ điển để tra cứu nhãn từ chỉ số
 
@@ -91,5 +91,5 @@ def predict_image(model, image_path):
     print(f"Dự đoán: {result}")
 
 # Dự đoán
-image_path = r"D:\cho.jpg"
+image_path = r"D:\Phan_Loai_Dong_Vat\test\cat.1.jpg"
 predict_image(model, image_path)
